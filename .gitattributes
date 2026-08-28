@@ -1,0 +1,2 @@
+# Le script de build Render doit rester en fins de ligne LF, même sur Windows.
+build.sh text eol=lf

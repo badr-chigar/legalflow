@@ -12,7 +12,11 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 const ACCESS_COOKIE = "lf_access";
 const REFRESH_COOKIE = "lf_refresh";
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+// Serveur uniquement (Edge). Fallback : NEXT_PUBLIC_API_URL puis localhost.
+const API_URL =
+  process.env.API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://127.0.0.1:8000";
 
 const ACCESS_COOKIE_OPTS = {
   httpOnly: true,

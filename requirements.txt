@@ -6,6 +6,11 @@ django-environ==0.11.2
 psycopg2-binary==2.9.10
 django-cors-headers==4.6.0
 
+# prod / deploy
+gunicorn==23.0.0
+whitenoise==6.8.2
+dj-database-url==2.3.0
+
 # dev / tests
 pytest==8.3.4
 pytest-django==4.9.0

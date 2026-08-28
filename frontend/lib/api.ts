@@ -15,8 +15,12 @@ import type { AuthTokens, Paginated, User } from "@/lib/types";
  * actions). Le navigateur ne voit jamais l'API directement : il passe par
  * les routes Next, qui portent le token depuis un cookie httpOnly.
  */
+// Appelée uniquement côté serveur → variable non exposée au navigateur.
+// Fallback : NEXT_PUBLIC_API_URL (dev historique) puis localhost.
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://127.0.0.1:8000";
 
 export class ApiError extends Error {
   readonly status: number;
