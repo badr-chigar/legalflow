@@ -32,7 +32,7 @@ export default async function GuideArticlePage({
 
   return (
     <article>
-      <div className="mx-auto max-w-2xl px-6 py-16 sm:py-20">
+      <div className="mx-auto max-w-[72ch] px-6 py-16 sm:py-20">
         <nav className="text-xs text-ink-muted">
           <Link href="/guides" className="hover:text-ink hover:underline">
             Guides

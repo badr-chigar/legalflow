@@ -20,7 +20,7 @@ export default async function CompaniesPage({
   ]);
 
   return (
-    <div className="max-w-5xl">
+    <div>
       <PageHeader
         title="Sociétés"
         description="Tous les dossiers auxquels vous avez accès."

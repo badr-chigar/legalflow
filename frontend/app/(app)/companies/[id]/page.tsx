@@ -47,7 +47,7 @@ export default async function CompanyDetailPage({
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
 
   return (
-    <div className="max-w-5xl">
+    <div>
       <nav className="mb-4 text-xs text-ink-muted">
         <Link href="/companies" className="hover:text-ink hover:underline">
           Sociétés

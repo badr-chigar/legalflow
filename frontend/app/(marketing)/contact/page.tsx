@@ -24,7 +24,7 @@ export default function ContactPage() {
         intro="Décrivez votre situation en quelques lignes ; nous revenons vers vous sous un jour ouvré."
       />
       <section className="border-t border-border-soft">
-        <div className="mx-auto max-w-6xl px-6 pb-16 pt-12 sm:pb-20 lg:pb-24 lg:pt-16">
+        <div className="mx-auto w-full max-w-[84rem] px-6 lg:px-12 2xl:max-w-[90rem] pb-16 pt-12 sm:pb-20 lg:pb-24 lg:pt-16">
           <div className="grid gap-12 lg:grid-cols-[1fr_18rem]">
             <ContactForm />
 

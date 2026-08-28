@@ -15,7 +15,7 @@ export function Disclosure({
 }) {
   return (
     <details open={defaultOpen} className="group border-b border-border-soft">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-4 text-sm font-medium text-ink marker:content-none [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-4 text-[15px] font-medium text-ink marker:content-none [&::-webkit-details-marker]:hidden">
         <span>{summary}</span>
         <span
           aria-hidden
@@ -24,7 +24,9 @@ export function Disclosure({
           +
         </span>
       </summary>
-      <div className="pb-5 text-sm text-ink-muted">{children}</div>
+      <div className="pb-5 text-[15px] leading-[1.6] text-ink-muted">
+        {children}
+      </div>
     </details>
   );
 }

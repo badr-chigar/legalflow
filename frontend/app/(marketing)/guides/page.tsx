@@ -20,8 +20,8 @@ export default function GuidesPage() {
         intro="Articles courts sur les choix qui reviennent le plus souvent. Contenu de démonstration, sans valeur de conseil juridique."
       />
       <section className="border-t border-border-soft">
-        <div className="mx-auto max-w-6xl px-6 pb-16 pt-12 sm:pb-20 lg:pb-24 lg:pt-16">
-        <ul className="max-w-3xl border-t border-border-soft">
+        <div className="mx-auto w-full max-w-[84rem] px-6 lg:px-12 2xl:max-w-[90rem] pb-16 pt-12 sm:pb-20 lg:pb-24 lg:pt-16">
+        <ul className="border-t border-border-soft">
           {GUIDES.map((g) => (
             <li key={g.slug} className="border-b border-border-soft py-6">
               <p className="font-mono text-xs text-ink-muted">

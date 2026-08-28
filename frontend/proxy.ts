@@ -27,6 +27,7 @@ const ACCESS_COOKIE_OPTS = {
 const PUBLIC_PATHS = [
   "/",
   "/login",
+  "/a-propos",
   "/tarifs",
   "/creation-entreprise",
   "/domiciliation",

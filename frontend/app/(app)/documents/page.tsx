@@ -22,7 +22,7 @@ export default async function DocumentsPage() {
   );
 
   return (
-    <div className="max-w-5xl">
+    <div>
       <PageHeader
         title="Documents"
         description="Toutes les pièces légales des dossiers auxquels vous avez accès."

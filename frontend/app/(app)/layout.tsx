@@ -33,7 +33,7 @@ export default async function AppLayout({
       </aside>
 
       <div className="flex min-w-0 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-border-soft bg-surface px-6 py-3">
+        <header className="flex items-center justify-between gap-4 border-b border-border-soft bg-surface px-6 py-3 lg:px-10">
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-ink">{name}</p>
             <p className="font-mono text-xs text-ink-muted">
@@ -55,7 +55,11 @@ export default async function AppLayout({
           ))}
         </nav>
 
-        <main className="flex-1 px-6 py-8">{children}</main>
+        <main className="flex-1 px-6 py-8 lg:px-10">
+          <div className="mx-auto w-full max-w-7xl 2xl:max-w-[88rem]">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

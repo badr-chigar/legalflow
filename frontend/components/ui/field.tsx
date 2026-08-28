@@ -13,16 +13,33 @@ interface FieldProps {
   hint?: string;
   error?: string;
   className?: string;
+  /** Élément aligné à droite du label (ex. lien « Mot de passe oublié ? »). */
+  labelAction?: React.ReactNode;
   children: React.ReactNode;
 }
 
-export function Field({ id, label, hint, error, className, children }: FieldProps) {
+export function Field({
+  id,
+  label,
+  hint,
+  error,
+  className,
+  labelAction,
+  children,
+}: FieldProps) {
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
 
   return (
     <div className={cn("space-y-1.5", className)}>
-      <Label htmlFor={id}>{label}</Label>
+      {labelAction ? (
+        <div className="flex items-baseline justify-between gap-3">
+          <Label htmlFor={id}>{label}</Label>
+          {labelAction}
+        </div>
+      ) : (
+        <Label htmlFor={id}>{label}</Label>
+      )}
       {children}
       {hint && !error ? (
         <p id={hintId} className="text-xs text-ink-muted">

@@ -39,7 +39,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="fr"
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
     >
-      <body className="min-h-full bg-page text-ink">
+      <body
+        className="min-h-full bg-page text-ink"
+        suppressHydrationWarning
+      >
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

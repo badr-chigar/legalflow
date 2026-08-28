@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
+import { Logo } from "@/components/brand/logo";
 
 import { LoginForm } from "./login-form";
 
@@ -7,10 +10,22 @@ export const metadata: Metadata = {
 };
 
 const TRACKED = [
-  ["Sociétés", "De la rédaction des statuts à l’immatriculation."],
-  ["Documents", "Statuts, M0, DNC, registre des bénéficiaires."],
-  ["Signatures", "Validation par code à usage unique, horodatée."],
+  [
+    "Sociétés",
+    "De la rédaction des statuts à l’immatriculation.",
+  ],
+  [
+    "Documents",
+    "Statuts, procès-verbaux, registre des bénéficiaires effectifs.",
+  ],
+  [
+    "Signatures",
+    "Validation par code à usage unique, horodatée.",
+  ],
 ] as const;
+
+const DOSSIER_STEPS = ["Brouillon", "En revue", "Déposé", "Immatriculée"];
+const DOSSIER_CURRENT = 1;
 
 /** N'accepte qu'un chemin interne (anti open-redirect). */
 function safeNext(raw: string | string[] | undefined): string {
@@ -25,53 +40,120 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string | string[] }>;
 }) {
   const next = safeNext((await searchParams).next);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
   return (
-    <main className="grid min-h-dvh lg:grid-cols-[minmax(0,44fr)_minmax(0,56fr)]">
-      {/* Volet institutionnel — identité, pas décor. */}
-      <aside className="flex flex-col border-b border-border-soft bg-page px-6 py-10 lg:border-b-0 lg:border-r lg:px-12 lg:py-12">
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink-muted">
-          Espace professionnel
-        </p>
-        <p className="mt-2 font-display text-xl text-ink">LegalFlow</p>
-        <p className="mt-3 max-w-sm text-sm text-ink-muted">
-          L’accompagnement à la création d’entreprise : dossiers de société,
-          pièces légales et signature électronique, au même endroit.
-        </p>
-
-        <div className="mt-10">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink-muted">
-            Dans votre espace
-          </p>
-          <dl className="mt-3 border-t border-border-soft">
-            {TRACKED.map(([term, desc]) => (
-              <div
-                key={term}
-                className="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-border-soft py-2.5"
-              >
-                <dt className="text-xs font-medium text-ink">{term}</dt>
-                <dd className="text-xs text-ink-muted">{desc}</dd>
-              </div>
-            ))}
-          </dl>
+    <main className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
+      {/* Panneau de marque — le seul aplat sombre plein assumé. */}
+      <aside className="flex flex-col gap-10 bg-brand-slate p-8 text-page lg:justify-between lg:gap-0 lg:p-14">
+        <div className="flex items-center justify-between gap-4">
+          <Logo variant="full" tone="invert" />
+          <Link
+            href="/"
+            className="text-xs text-page/70 transition-colors hover:text-page"
+          >
+            ← Retour au site
+          </Link>
         </div>
 
-        <p className="mt-auto pt-10 font-mono text-xs text-ink-muted">
-          API · {apiUrl}
-        </p>
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-brand-brass">
+            Espace professionnel
+          </p>
+          <h2 className="mt-3 max-w-[18ch] font-display text-[26px] font-semibold leading-[1.15] tracking-[-0.015em] sm:text-[32px]">
+            Votre dossier, du premier acte à l’immatriculation.
+          </h2>
+          <p className="mt-4 max-w-[46ch] text-[15px] text-page/70">
+            Suivez chaque société pas à pas : rédaction des actes, enregistrement
+            à la DGI, dépôt au guichet unique et signature électronique.
+          </p>
+          <p className="mt-2 hidden max-w-[46ch] text-[15px] text-page/70 lg:block">
+            Un seul espace pour vos formalités et celles de vos clients.
+          </p>
+
+          {/* Aperçu de dossier — masqué sur mobile. */}
+          <div className="mt-8 hidden rounded-card border border-page/15 bg-page/5 p-5 lg:block">
+            <div className="flex items-baseline justify-between border-b border-page/15 pb-3">
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-page/60">
+                Dossier
+              </span>
+              <span className="font-mono text-xs text-page">
+                Atlas Conseil · SARLAU
+              </span>
+            </div>
+            <div className="mt-4">
+              <div className="flex items-center">
+                {DOSSIER_STEPS.map((_, i) => (
+                  <div key={i} className="flex flex-1 items-center last:flex-none">
+                    <span
+                      className={
+                        i === DOSSIER_CURRENT
+                          ? "h-2.5 w-2.5 shrink-0 rounded-full bg-brand-brass"
+                          : i < DOSSIER_CURRENT
+                            ? "h-2.5 w-2.5 shrink-0 rounded-full bg-page"
+                            : "h-2.5 w-2.5 shrink-0 rounded-full border border-page/30"
+                      }
+                    />
+                    {i < DOSSIER_STEPS.length - 1 ? (
+                      <span
+                        className={
+                          i < DOSSIER_CURRENT
+                            ? "h-[3px] flex-1 rounded-full bg-brand-brass"
+                            : "h-px flex-1 bg-page/20"
+                        }
+                      />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 flex justify-between gap-1">
+                {DOSSIER_STEPS.map((label, i) => (
+                  <span
+                    key={label}
+                    className={
+                      "flex-1 text-center text-[10px] leading-[1.25] first:text-left last:text-right " +
+                      (i === DOSSIER_CURRENT
+                        ? "font-medium text-brand-brass"
+                        : i < DOSSIER_CURRENT
+                          ? "text-page"
+                          : "text-page/50")
+                    }
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dl className="hidden border-t border-page/15 lg:block">
+          {TRACKED.map(([term, desc]) => (
+            <div
+              key={term}
+              className="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-page/15 py-3"
+            >
+              <dt className="text-xs font-medium text-page">{term}</dt>
+              <dd className="text-xs text-page/70">{desc}</dd>
+            </div>
+          ))}
+        </dl>
       </aside>
 
-      {/* Volet formulaire — surface blanche, aucune ombre. */}
-      <div className="flex items-center justify-center bg-surface px-6 py-12 lg:px-12">
+      {/* Panneau formulaire. */}
+      <div className="flex items-center justify-center bg-page p-6 lg:p-10">
         <div className="w-full max-w-sm">
-          <h1 className="font-display text-xl text-ink">Connexion</h1>
+          <h1 className="font-display text-[26px] font-semibold tracking-[-0.015em] text-ink sm:text-[28px]">
+            Connexion
+          </h1>
           <p className="mt-2 text-sm text-ink-muted">
             Accédez à votre espace avec vos identifiants LegalFlow.
           </p>
 
           <div className="mt-8">
-            <LoginForm next={next} />
+            <LoginForm
+              next={next}
+              showDemo={process.env.NODE_ENV === "development"}
+            />
           </div>
         </div>
       </div>

@@ -5,7 +5,12 @@ import { PageHeader } from "@/components/app/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { apiGetAll } from "@/lib/api";
-import { COMPANY_STATUS, LEGAL_FORM_LABEL, formatDate } from "@/lib/format";
+import {
+  COMPANY_STATUS,
+  LEGAL_FORM_LABEL,
+  formatCapital,
+  formatDate,
+} from "@/lib/format";
 import type { Company, LegalDocument } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -34,7 +39,7 @@ export default async function DashboardPage() {
     .slice(0, 5);
 
   return (
-    <div className="max-w-4xl">
+    <div>
       <PageHeader
         title="Tableau de bord"
         actions={
@@ -69,8 +74,9 @@ export default async function DashboardPage() {
               <tr className="border-b border-border-soft text-left text-xs text-ink-muted">
                 <th className="px-4 py-2.5 font-medium">Raison sociale</th>
                 <th className="px-4 py-2.5 font-medium">Forme</th>
+                <th className="px-4 py-2.5 text-right font-medium">Capital</th>
                 <th className="px-4 py-2.5 font-medium">Statut</th>
-                <th className="px-4 py-2.5 font-medium">Créée le</th>
+                <th className="px-4 py-2.5 text-right font-medium">Créée le</th>
               </tr>
             </thead>
             <tbody>
@@ -90,13 +96,16 @@ export default async function DashboardPage() {
                   <td className="px-4 py-2.5 text-ink-muted">
                     {LEGAL_FORM_LABEL[c.legal_form]}
                   </td>
+                  <td className="px-4 py-2.5 text-right font-mono text-xs text-ink-muted">
+                    {formatCapital(c.share_capital)}
+                  </td>
                   <td className="px-4 py-2.5">
                     <StatusBadge
                       label={COMPANY_STATUS[c.status].label}
                       tone={COMPANY_STATUS[c.status].tone}
                     />
                   </td>
-                  <td className="px-4 py-2.5 font-mono text-xs text-ink-muted">
+                  <td className="px-4 py-2.5 text-right font-mono text-xs text-ink-muted">
                     {formatDate(c.created_at)}
                   </td>
                 </tr>

@@ -46,7 +46,7 @@ export default function MentionsLegalesPage() {
     <>
       <PageIntro eyebrow="Informations légales" title="Mentions légales" />
       <section className="border-t border-border-soft">
-        <div className="mx-auto max-w-2xl px-6 pb-16 pt-12 sm:pb-20 lg:pt-16">
+        <div className="mx-auto max-w-[72ch] px-6 pb-16 pt-12 sm:pb-20 lg:pt-16">
           <div className="space-y-12">
             {SECTIONS.map((s) => (
               <section key={s.id} id={s.id} className="scroll-mt-24">

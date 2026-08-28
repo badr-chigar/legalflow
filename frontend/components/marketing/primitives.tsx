@@ -7,9 +7,42 @@ export { Reveal };
 
 /* --------------------------------------------------------------------------
  * Primitives de la vitrine — direction éditoriale-institutionnelle.
- * Épine dorsale : numéro de section en laiton + eyebrow mono collant,
- * titres Fraunces généreux, colonnes de lecture ~68ch, filets 1px.
+ * Épine dorsale : numéro de section en laiton + eyebrow mono, titre Fraunces
+ * et intro dans une colonne gauche collante ; contenu pleine largeur à droite.
  * ------------------------------------------------------------------------ */
+
+/** Conteneur commun : pleine largeur exploitée, respire sur très grand écran. */
+export const SHELL =
+  "mx-auto w-full max-w-[84rem] px-6 lg:px-12 2xl:max-w-[90rem]";
+
+/** Fonds de section pleine largeur (alternance, séparés par un filet). */
+export type SectionBg = "page" | "surface" | "warm";
+export const SECTION_BG: Record<SectionBg, string> = {
+  page: "bg-page",
+  surface: "bg-surface",
+  warm: "bg-nav-active",
+};
+
+/** Met un mot-clé du titre en `brand-slate`. */
+export function AccentTitle({
+  text,
+  accent,
+}: {
+  text: string;
+  accent?: string;
+}) {
+  if (accent && text.includes(accent)) {
+    const i = text.indexOf(accent);
+    return (
+      <>
+        {text.slice(0, i)}
+        <span className="text-brand-slate">{accent}</span>
+        {text.slice(i + accent.length)}
+      </>
+    );
+  }
+  return <>{text}</>;
+}
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -24,41 +57,58 @@ export function Section({
   n,
   eyebrow,
   title,
+  accent,
   intro,
   children,
-  contentClassName,
+  bg = "page",
+  tight = false,
 }: {
   id?: string;
   /** Numéro éditorial, ex. "02". Affiché en laiton. */
   n?: string;
   eyebrow: string;
   title: string;
+  /** Mot-clé du titre passé en brand-slate. */
+  accent?: string;
   intro?: string;
   children?: ReactNode;
-  contentClassName?: string;
+  bg?: SectionBg;
+  /** Réduit le padding haut — pour la section qui suit le hero. */
+  tight?: boolean;
 }) {
   return (
-    <section id={id} className="border-t border-border-soft">
-      <div className="mx-auto grid max-w-6xl gap-x-8 gap-y-6 px-6 py-16 sm:py-20 lg:grid-cols-12 lg:py-24">
-        <div className="lg:col-span-3">
-          <div className="flex items-baseline gap-3 lg:sticky lg:top-20 lg:flex-col lg:items-start lg:gap-2">
+    <section
+      id={id}
+      className={cn("border-t border-border-soft", SECTION_BG[bg])}
+    >
+      <div
+        className={cn(
+          SHELL,
+          "grid gap-y-8 pb-16 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-14 lg:pb-20 xl:gap-20",
+          tight ? "pt-8 lg:pt-10" : "pt-16 lg:pt-20",
+        )}
+      >
+        <div className="lg:sticky lg:top-24 lg:h-max lg:self-start">
+          <div className="flex items-baseline gap-3 lg:block">
             {n ? (
-              <span className="font-mono text-sm text-brand-brass">{n}</span>
+              <span className="font-mono text-sm text-brand-brass lg:mb-1 lg:block">
+                {n}
+              </span>
             ) : null}
             <Eyebrow>{eyebrow}</Eyebrow>
           </div>
+          <h2 className="mt-3 max-w-[16ch] text-balance font-display text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-ink lg:mt-4">
+            <AccentTitle text={title} accent={accent} />
+          </h2>
+          {intro ? (
+            <p className="mt-4 max-w-[44ch] text-[15px] text-ink-muted">
+              {intro}
+            </p>
+          ) : null}
         </div>
 
-        <div className={cn("lg:col-span-8 lg:col-start-4", contentClassName)}>
-          <Reveal>
-            <h2 className="max-w-[16ch] text-balance font-display text-[34px] leading-[1.1] text-ink sm:text-[42px]">
-              {title}
-            </h2>
-            {intro ? (
-              <p className="mt-5 max-w-[68ch] text-base text-ink-muted">{intro}</p>
-            ) : null}
-            {children ? <div className="mt-10">{children}</div> : null}
-          </Reveal>
+        <div className="min-w-0">
+          <Reveal>{children}</Reveal>
         </div>
       </div>
     </section>
@@ -69,23 +119,25 @@ export function Section({
 export function PageIntro({
   eyebrow,
   title,
+  accent,
   intro,
   actions,
 }: {
   eyebrow: string;
   title: string;
+  accent?: string;
   intro?: string;
   actions?: ReactNode;
 }) {
   return (
     <section className="border-b border-border-soft">
-      <div className="mx-auto max-w-6xl px-6 pb-14 pt-16 sm:pt-20 lg:pb-16 lg:pt-24">
+      <div className={cn(SHELL, "pb-12 pt-16 lg:pb-14 lg:pt-20")}>
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="mt-5 max-w-[20ch] text-balance font-display text-[38px] leading-[1.05] text-ink sm:text-[52px]">
-          {title}
+        <h1 className="mt-5 max-w-[22ch] text-balance font-display text-[clamp(2.25rem,4vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-ink">
+          <AccentTitle text={title} accent={accent} />
         </h1>
         {intro ? (
-          <p className="mt-6 max-w-[64ch] text-base text-ink-muted">{intro}</p>
+          <p className="mt-6 max-w-[68ch] text-base text-ink-muted">{intro}</p>
         ) : null}
         {actions ? (
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">{actions}</div>
@@ -101,12 +153,23 @@ export function StatBand({
 }: {
   items: readonly (readonly [string, string])[];
 }) {
+  const cols =
+    items.length >= 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3";
   return (
-    <section className="border-t border-border-soft bg-surface">
-      <div className="mx-auto grid max-w-6xl divide-y divide-border-soft px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    <section className="border-t border-border-soft bg-nav-active">
+      <div
+        className={cn(
+          SHELL,
+          "grid divide-y divide-border-soft sm:divide-x sm:divide-y-0",
+          cols,
+        )}
+      >
         {items.map(([value, label]) => (
-          <div key={label} className="py-8 sm:px-8 sm:py-10 sm:first:pl-0">
-            <p className="font-display text-[40px] leading-none text-ink">
+          <div
+            key={label}
+            className="py-8 sm:px-8 sm:py-10 sm:first:pl-0 lg:first:pl-0"
+          >
+            <p className="font-display text-[44px] font-semibold leading-none tracking-[-0.015em] text-ink">
               {value}
             </p>
             <p className="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
@@ -165,10 +228,10 @@ export function FiletList({
       {items.map(([term, desc]) => (
         <div
           key={term}
-          className="grid gap-1 border-b border-border-soft py-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:gap-8"
+          className="grid gap-1 border-b border-border-soft py-5 sm:grid-cols-[minmax(0,16rem)_1fr] sm:gap-10"
         >
           <dt className="font-display text-base text-ink">{term}</dt>
-          <dd className="max-w-[60ch] text-sm text-ink-muted">{desc}</dd>
+          <dd className="text-[15px] text-ink-muted">{desc}</dd>
         </div>
       ))}
     </dl>
