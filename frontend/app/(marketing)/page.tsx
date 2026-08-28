@@ -3,8 +3,15 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Disclosure } from "@/components/marketing/disclosure";
+import {
+  Check,
+  Dash,
+  Eyebrow,
+  Reveal,
+  Section,
+  StatBand,
+} from "@/components/marketing/primitives";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "LegalFlow — Créez et pilotez votre société en ligne",
@@ -12,100 +19,86 @@ export const metadata: Metadata = {
     "Création d’entreprise, domiciliation et secrétariat juridique sur une seule plateforme. Actes rédigés par des juristes, suivi en temps réel, forfait tout inclus.",
 };
 
-/* --------------------------------------------------------------------------
- * Page publique « client ». Reprend les sections de mylegal.ma, refaites
- * avec le système de design LegalFlow (design-system.md). Copy de démo.
- * ------------------------------------------------------------------------ */
+/* =========================================================================
+ * Vitrine LegalFlow — direction éditoriale-institutionnelle.
+ * Fraunces généreux, épine dorsale numérotée en laiton, filets 1px,
+ * papier chaud #FBFAF7, une seule bande sombre (CTA final).
+ * ======================================================================= */
 
-function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <p className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
-      {children}
-    </p>
-  );
-}
+/* --- Schémas dessinés main (trait 1.5px, pas d'icônes de librairie) ----- */
 
-function Section({
-  id,
-  eyebrow,
-  title,
-  intro,
-  children,
-}: {
-  id?: string;
-  eyebrow: string;
-  title: string;
-  intro?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section id={id} className="border-t border-border-soft">
-      <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="mt-3 max-w-2xl text-balance font-display text-xl text-ink">
-          {title}
-        </h2>
-        {intro ? (
-          <p className="mt-3 max-w-2xl text-sm text-ink-muted">{intro}</p>
-        ) : null}
-        <div className="mt-10">{children}</div>
-      </div>
-    </section>
-  );
-}
-
-function Check({ className }: { className?: string }) {
+function LineIcon({ children }: { children: ReactNode }) {
   return (
     <svg
-      width="15"
-      height="15"
-      viewBox="0 0 16 16"
+      viewBox="0 0 40 40"
+      width="40"
+      height="40"
       fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden="true"
-      className={cn("shrink-0 text-success", className)}
+      className="text-ink"
     >
-      <path
-        d="m3 8.5 3.2 3.2L13 5"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {children}
     </svg>
   );
 }
 
-function Dash() {
-  return <span className="text-ink-muted">–</span>;
-}
+const STEP_ICONS = [
+  // Dossier
+  <LineIcon key="d">
+    <path d="M5 12h9l3 3h18v20H5z" />
+    <path d="M5 21h30" />
+  </LineIcon>,
+  // Juriste
+  <LineIcon key="j">
+    <circle cx="20" cy="14" r="5" />
+    <path d="M9 34c0-6 5-11 11-11s11 5 11 11" />
+  </LineIcon>,
+  // Signature
+  <LineIcon key="s">
+    <path d="M6 31h22" />
+    <path d="M9 27c3-9 5 5 8-1s4 4 7-3" />
+    <path d="M27 13l4 4-9 9-5 1 1-5z" />
+  </LineIcon>,
+  // Tampon (RC)
+  <LineIcon key="t">
+    <path d="M16 8h8v6l3 7H13l3-7z" />
+    <path d="M9 30h22" />
+    <path d="M14 25h12v5H14z" />
+  </LineIcon>,
+];
 
-/* ----------------------------- 1. Hero ---------------------------------- */
+/* --------------------------------- Hero -------------------------------- */
 
 const INCLUDED = [
   "Certificat négatif",
   "Statuts rédigés et enregistrés",
   "Immatriculation au registre du commerce",
-  "Identifiant fiscal (IF)",
-  "Identifiant commun de l’entreprise (ICE)",
-  "Affiliation CNSS",
+  "Identifiant fiscal, ICE et affiliation CNSS",
 ];
+
+const DOSSIER_STEPS = ["Brouillon", "En revue", "Déposé", "Immatriculé"];
+const DOSSIER_CURRENT = 1; // index de l'étape en cours
 
 function Hero() {
   return (
     <section className="border-b border-border-soft">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
-        <div>
+      <div className="mx-auto grid max-w-6xl gap-x-8 gap-y-10 px-6 py-16 sm:py-20 lg:grid-cols-12 lg:py-24">
+        <div className="lg:col-span-6">
           <Eyebrow>Accompagnement juridique · 100 % en ligne</Eyebrow>
-          <h1 className="mt-4 text-balance font-display text-[30px] leading-tight text-ink sm:text-[40px]">
+          <h1 className="mt-5 max-w-[19ch] text-balance font-display text-[42px] leading-[1.05] text-ink sm:text-[54px]">
             Créez et pilotez votre société sans passer par le guichet.
           </h1>
-          <p className="mt-5 max-w-xl text-base text-ink-muted">
+          <p className="mt-6 max-w-[52ch] text-base text-ink-muted sm:text-lg">
             Création d’entreprise, domiciliation et secrétariat juridique réunis
-            sur une seule plateforme. Des juristes rédigent vos actes, vous
+            sur une seule plateforme. Des juristes rédigent vos actes ; vous
             suivez chaque étape en temps réel.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/login" className={buttonVariants({ size: "lg" })}>
+            <Link href="/creer" className={buttonVariants({ size: "lg" })}>
               Créer mon entreprise
             </Link>
             <Link
@@ -115,36 +108,94 @@ function Hero() {
               Voir les tarifs
             </Link>
           </div>
-          <p className="mt-8 border-t border-border-soft pt-4 font-mono text-xs text-ink-muted">
-            + de 1 000 dossiers accompagnés · Satisfait ou remboursé
+          <p className="mt-10 border-t border-border-soft pt-4 font-mono text-xs text-ink-muted">
+            + de 1 000 dossiers accompagnés
+            <span className="mx-2 text-brand-brass">·</span>
+            Satisfait ou remboursé
           </p>
         </div>
 
-        <div className="rounded-card border border-border-soft bg-surface p-6">
-          <Eyebrow>Compris dans le forfait création</Eyebrow>
-          <ul className="mt-4">
-            {INCLUDED.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 border-b border-border-soft py-2.5 text-sm text-ink last:border-b-0"
-              >
-                <Check className="mt-0.5" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        {/* Aperçu de dossier — seule ombre portée autorisée avec les toasts. */}
+        <div className="lg:col-span-5 lg:col-start-8">
+          <div className="rounded-card border border-border-soft bg-surface p-6 shadow-overlay">
+            <div className="flex items-baseline justify-between border-b border-border-soft pb-3">
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted">
+                Dossier
+              </span>
+              <span className="font-mono text-xs text-ink">
+                SARL · Atlas Conseil
+              </span>
+            </div>
+
+            <div className="mt-5">
+              <div className="flex items-center">
+                {DOSSIER_STEPS.map((_, i) => (
+                  <div key={i} className="flex flex-1 items-center last:flex-none">
+                    <span
+                      className={
+                        i <= DOSSIER_CURRENT
+                          ? "h-2.5 w-2.5 shrink-0 rounded-full bg-brand-slate"
+                          : "h-2.5 w-2.5 shrink-0 rounded-full border border-border-soft bg-surface"
+                      }
+                    />
+                    {i < DOSSIER_STEPS.length - 1 ? (
+                      <span
+                        className={
+                          i < DOSSIER_CURRENT
+                            ? "h-px flex-1 bg-brand-slate"
+                            : "h-px flex-1 bg-border-soft"
+                        }
+                      />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 flex justify-between">
+                {DOSSIER_STEPS.map((label, i) => (
+                  <span
+                    key={label}
+                    className={
+                      "text-[11px] " +
+                      (i === DOSSIER_CURRENT
+                        ? "font-medium text-brand-slate"
+                        : i < DOSSIER_CURRENT
+                          ? "text-ink"
+                          : "text-ink-muted")
+                    }
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <ul className="mt-6 border-t border-border-soft pt-4">
+              {INCLUDED.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5 py-1.5 text-sm text-ink"
+                >
+                  <Check className="mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 font-mono text-[11px] text-ink-muted">
+              Compris dans le forfait création
+            </p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ------------------------ 2. Bandeau confiance ------------------------- */
+/* ----------------------------- Bandeau confiance ---------------------- */
 
 const TRUST = [
   "Statuts rédigés par des juristes",
   "Signature électronique conforme",
-  "Forfait tout inclus, sans surprise",
+  "Forfait tout inclus",
   "Suivi en temps réel",
   "Garantie anti-rejet",
 ];
@@ -152,9 +203,14 @@ const TRUST = [
 function TrustBar() {
   return (
     <section className="border-b border-border-soft bg-surface">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-6 py-5">
-        {TRUST.map((item) => (
-          <span key={item} className="text-xs text-ink-muted">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-6 py-5">
+        {TRUST.map((item, i) => (
+          <span key={item} className="flex items-center text-xs text-ink-muted">
+            {i > 0 ? (
+              <span className="mr-3 text-brand-brass" aria-hidden>
+                ·
+              </span>
+            ) : null}
             {item}
           </span>
         ))}
@@ -163,17 +219,18 @@ function TrustBar() {
   );
 }
 
-/* ---------------------------- 3. Services ----------------------------- */
+/* --------------------------------- 01 Services ----------------------- */
 
 function Services() {
   return (
     <Section
       id="services"
+      n="01"
       eyebrow="Services"
       title="Une plateforme, trois services."
       intro="Le même interlocuteur vous suit de la constitution à la vie courante de la société."
     >
-      <div className="max-w-3xl border-t border-border-soft">
+      <div className="border-t border-border-soft">
         <Disclosure summary="Création d’entreprise" defaultOpen>
           <ul className="space-y-2">
             {[
@@ -202,17 +259,11 @@ function Services() {
   );
 }
 
-/* --------------------------- 4. Pourquoi nous ------------------------- */
+/* ------------------------------- 02 Pourquoi ------------------------- */
 
 const PILLARS = [
-  [
-    "Simplicité",
-    "Un formulaire guidé, aucune connaissance juridique requise.",
-  ],
-  [
-    "Fiabilité",
-    "Chaque acte est relu par un juriste avant dépôt au greffe.",
-  ],
+  ["Simplicité", "Un formulaire guidé, aucune connaissance juridique requise."],
+  ["Fiabilité", "Chaque acte est relu par un juriste avant dépôt au greffe."],
   [
     "Tarif transparent",
     "Un forfait annoncé à l’avance, honoraires et frais inclus.",
@@ -221,23 +272,24 @@ const PILLARS = [
     "Accompagnement",
     "Un interlocuteur unique, joignable jusqu’à l’immatriculation.",
   ],
-];
+] as const;
 
 function WhyUs() {
   return (
     <Section
       id="pourquoi"
+      n="02"
       eyebrow="Pourquoi LegalFlow"
       title="La création d’entreprise, sans friction."
     >
-      <dl className="max-w-3xl border-t border-border-soft">
+      <dl className="border-t border-border-soft">
         {PILLARS.map(([term, desc]) => (
           <div
             key={term}
-            className="grid gap-1 border-b border-border-soft py-4 sm:grid-cols-[12rem_1fr] sm:gap-6"
+            className="grid gap-1 border-b border-border-soft py-5 sm:grid-cols-[minmax(0,13rem)_1fr] sm:gap-8"
           >
-            <dt className="text-sm font-medium text-ink">{term}</dt>
-            <dd className="text-sm text-ink-muted">{desc}</dd>
+            <dt className="font-display text-base text-ink">{term}</dt>
+            <dd className="max-w-[58ch] text-sm text-ink-muted">{desc}</dd>
           </div>
         ))}
       </dl>
@@ -245,70 +297,66 @@ function WhyUs() {
   );
 }
 
-/* ------------------------ 5. Comment ça marche ----------------------- */
+/* --------------------------- 03 Comment ça marche ------------------- */
 
 const STEPS = [
   [
-    "01",
     "Vérification du nom",
     "Nous déposons la demande de certificat négatif et réservons votre dénomination.",
   ],
   [
-    "02",
     "Rédaction des actes",
     "Statuts, formulaires et annexes préparés par un juriste, validés avec vous.",
   ],
   [
-    "03",
     "Signature électronique",
     "Vous signez en ligne par code à usage unique ; les pièces sont horodatées.",
   ],
   [
-    "04",
     "Dépôt et immatriculation",
     "Dépôt au greffe, obtention du RC, de l’IF, de l’ICE et de l’affiliation CNSS.",
   ],
-];
+] as const;
 
 function HowItWorks() {
   return (
     <Section
       id="etapes"
+      n="03"
       eyebrow="Comment ça marche"
       title="Les étapes, du nom à l’immatriculation."
     >
-      <div className="grid gap-10 lg:grid-cols-[1fr_18rem]">
-        <ol className="border-t border-border-soft">
-          {STEPS.map(([num, title, desc]) => (
-            <li
-              key={num}
-              className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border-soft py-5"
-            >
-              <span className="font-mono text-sm text-ink-muted">{num}</span>
+      <ol className="relative border-t border-border-soft">
+        {/* rail continu */}
+        <span
+          aria-hidden
+          className="absolute left-[15px] top-9 bottom-9 w-px bg-border-soft sm:left-[19px]"
+        />
+        {STEPS.map(([title, desc], i) => (
+          <li
+            key={title}
+            className="relative grid grid-cols-[2rem_1fr] gap-4 border-b border-border-soft py-7 sm:grid-cols-[2.5rem_1fr] sm:gap-6"
+          >
+            <span className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-page font-mono text-xs text-brand-brass sm:h-10 sm:w-10 sm:text-sm">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="flex items-start justify-between gap-6">
               <div>
-                <p className="font-display text-base text-ink">{title}</p>
-                <p className="mt-1 text-sm text-ink-muted">{desc}</p>
+                <p className="font-display text-lg text-ink">{title}</p>
+                <p className="mt-1.5 max-w-[52ch] text-sm text-ink-muted">
+                  {desc}
+                </p>
               </div>
-            </li>
-          ))}
-        </ol>
-
-        <aside className="h-fit rounded-card border border-border-soft bg-surface p-5">
-          <Eyebrow>Délai moyen</Eyebrow>
-          <p className="mt-2 font-display text-lg text-ink">
-            Société livrée en 10 jours ouvrés
-          </p>
-          <p className="mt-2 text-xs text-ink-muted">
-            À compter de la validation de vos pièces. Le certificat négatif
-            dépend du délai de l’administration.
-          </p>
-        </aside>
-      </div>
+              <span className="hidden shrink-0 sm:block">{STEP_ICONS[i]}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
     </Section>
   );
 }
 
-/* ------------------------- 6. Domiciliation ------------------------- */
+/* ------------------------------- 04 Domiciliation ------------------- */
 
 const DOMICILIATION = [
   [
@@ -323,34 +371,32 @@ const DOMICILIATION = [
     "Contrat conforme sous 24 h",
     "Un contrat de domiciliation enregistrable, transmis sous un jour ouvré.",
   ],
-];
+] as const;
 
 function Domiciliation() {
   return (
     <Section
       id="domiciliation"
+      n="04"
       eyebrow="Domiciliation"
       title="Une adresse professionnelle, sans louer de bureau."
     >
-      <dl className="max-w-3xl border-t border-border-soft">
+      <dl className="border-t border-border-soft">
         {DOMICILIATION.map(([term, desc]) => (
           <div
             key={term}
-            className="grid gap-1 border-b border-border-soft py-4 sm:grid-cols-[16rem_1fr] sm:gap-6"
+            className="grid gap-1 border-b border-border-soft py-5 sm:grid-cols-[minmax(0,15rem)_1fr] sm:gap-8"
           >
-            <dt className="text-sm font-medium text-ink">{term}</dt>
-            <dd className="text-sm text-ink-muted">{desc}</dd>
+            <dt className="font-display text-base text-ink">{term}</dt>
+            <dd className="max-w-[58ch] text-sm text-ink-muted">{desc}</dd>
           </div>
         ))}
       </dl>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link href="/login" className={buttonVariants()}>
+        <Link href="/creer" className={buttonVariants()}>
           Domicilier ma société
         </Link>
-        <Link
-          href="/tarifs"
-          className={buttonVariants({ variant: "secondary" })}
-        >
+        <Link href="/tarifs" className={buttonVariants({ variant: "secondary" })}>
           Voir les tarifs
         </Link>
       </div>
@@ -358,7 +404,7 @@ function Domiciliation() {
   );
 }
 
-/* --------------------- 7. MRE & investisseurs --------------------- */
+/* --------------------- 05 MRE & investisseurs --------------------- */
 
 const MRE = [
   "Aucun déplacement au Maroc requis.",
@@ -373,14 +419,15 @@ function Mre() {
   return (
     <Section
       id="mre"
+      n="05"
       eyebrow="MRE & investisseurs"
       title="Créez votre société au Maroc, depuis n’importe où."
     >
-      <ul className="max-w-2xl border-t border-border-soft">
+      <ul className="border-t border-border-soft">
         {MRE.map((item) => (
           <li
             key={item}
-            className="flex items-start gap-3 border-b border-border-soft py-3 text-sm text-ink"
+            className="flex items-start gap-3 border-b border-border-soft py-3.5 text-sm text-ink"
           >
             <Check className="mt-0.5" />
             <span>{item}</span>
@@ -396,30 +443,34 @@ function Mre() {
   );
 }
 
-/* ----------------------- 8. Accompagnement ---------------------- */
+/* ----------------------- 06 Accompagnement ---------------------- */
 
 function Support() {
   return (
     <Section
       id="accompagnement"
+      n="06"
       eyebrow="Accompagnement"
       title="Un seul interlocuteur pour toutes vos formalités."
     >
-      <div className="max-w-2xl border-t border-border-soft">
-        <p className="border-b border-border-soft py-4 text-sm text-ink-muted">
-          Un juriste dédié, joignable par WhatsApp, e-mail ou téléphone aux
-          heures ouvrées.
-        </p>
-        <p className="border-b border-border-soft py-4 text-sm text-ink-muted">
-          Un suivi continu, de la réservation du nom jusqu’à la remise du
-          registre du commerce.
-        </p>
-      </div>
+      <dl className="border-t border-border-soft">
+        <div className="border-b border-border-soft py-5">
+          <dt className="font-display text-base text-ink">Joignable</dt>
+          <dd className="mt-1 max-w-[58ch] text-sm text-ink-muted">
+            Un juriste dédié, par WhatsApp, e-mail ou téléphone aux heures
+            ouvrées.
+          </dd>
+        </div>
+        <div className="border-b border-border-soft py-5">
+          <dt className="font-display text-base text-ink">Continu</dt>
+          <dd className="mt-1 max-w-[58ch] text-sm text-ink-muted">
+            Un suivi de la réservation du nom jusqu’à la remise du registre du
+            commerce.
+          </dd>
+        </div>
+      </dl>
       <div className="mt-8">
-        <Link
-          href="/contact"
-          className={buttonVariants({ variant: "secondary" })}
-        >
+        <Link href="/contact" className={buttonVariants({ variant: "secondary" })}>
           Contacter l’équipe
         </Link>
       </div>
@@ -427,56 +478,78 @@ function Support() {
   );
 }
 
-/* ------------------------- 9. Comparatif ----------------------- */
+/* --------------------------- 07 Comparatif ---------------------- */
 
 const COMPARISON: [string, ReactNode, ReactNode][] = [
-  ["Démarches en ligne", <Check key="a" />, <Dash key="b" />],
-  ["Tarif annoncé à l’avance", <Check key="a" />, <Dash key="b" />],
-  ["Suivi en temps réel", <Check key="a" />, <Dash key="b" />],
+  ["Démarches en ligne", <Check key="a" tone="brass" />, <Dash key="b" />],
+  ["Tarif annoncé à l’avance", <Check key="a" tone="brass" />, <Dash key="b" />],
+  ["Suivi en temps réel", <Check key="a" tone="brass" />, <Dash key="b" />],
   ["Délai indicatif", "10 jours ouvrés", "3 à 6 semaines"],
-  ["Documents conformes garantis", <Check key="a" />, <Check key="b" />],
-  ["Domiciliation incluse", <Check key="a" />, <Dash key="b" />],
+  [
+    "Documents conformes garantis",
+    <Check key="a" tone="brass" />,
+    <Check key="b" tone="brass" />,
+  ],
+  ["Domiciliation incluse", <Check key="a" tone="brass" />, <Dash key="b" />],
 ];
 
 function Comparison() {
   return (
-    <Section
-      id="comparatif"
-      eyebrow="Comparatif"
-      title="Le même résultat juridique, sans les rendez-vous."
-    >
-      <div className="max-w-3xl overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-y border-border-soft text-left">
-              <th className="py-3 pr-4 font-medium text-ink-muted">Critère</th>
-              <th className="px-4 py-3 font-medium text-ink">LegalFlow</th>
-              <th className="py-3 pl-4 font-medium text-ink-muted">
-                Cabinet traditionnel
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {COMPARISON.map(([label, ours, theirs]) => (
-              <tr key={label} className="border-b border-border-soft">
-                <th
-                  scope="row"
-                  className="py-3 pr-4 text-left font-normal text-ink"
-                >
-                  {label}
-                </th>
-                <td className="px-4 py-3 text-ink">{ours}</td>
-                <td className="py-3 pl-4 text-ink-muted">{theirs}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <section id="comparatif" className="border-t border-border-soft">
+      <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20 lg:py-24">
+        <div className="flex items-baseline gap-3">
+          <span className="font-mono text-sm text-brand-brass">07</span>
+          <Eyebrow>Comparatif</Eyebrow>
+        </div>
+        <Reveal>
+          <h2 className="mt-4 max-w-[18ch] text-balance font-display text-[34px] leading-[1.1] text-ink sm:text-[42px]">
+            Le même résultat juridique, sans les rendez-vous.
+          </h2>
+
+          <div className="mt-10 overflow-x-auto">
+            <table className="w-full min-w-[40rem] border-collapse text-sm">
+              <thead className="sticky top-14 z-20 bg-page">
+                <tr className="border-y border-border-soft text-left">
+                  <th className="w-[46%] py-3 pr-4 font-mono text-xs font-normal uppercase tracking-[0.14em] text-ink-muted">
+                    Critère
+                  </th>
+                  <th className="border-t-2 border-brand-brass bg-nav-active px-4 py-3 font-display text-base text-ink">
+                    LegalFlow
+                  </th>
+                  <th className="py-3 pl-4 font-mono text-xs font-normal uppercase tracking-[0.14em] text-ink-muted">
+                    Cabinet traditionnel
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map(([label, ours, theirs], i) => (
+                  <tr
+                    key={label}
+                    className={
+                      "border-b border-border-soft " +
+                      (i % 2 === 1 ? "bg-nav-active/40" : "")
+                    }
+                  >
+                    <th
+                      scope="row"
+                      className="py-3.5 pr-4 text-left font-normal text-ink"
+                    >
+                      {label}
+                    </th>
+                    <td className="bg-nav-active px-4 py-3.5 text-ink">{ours}</td>
+                    <td className="py-3.5 pl-4 text-ink-muted">{theirs}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Reveal>
       </div>
-    </Section>
+    </section>
   );
 }
 
-/* ------------------------ 10. Témoignages --------------------- */
+/* ------------------------ 08 Témoignages --------------------- */
 
 const TESTIMONIALS = [
   [
@@ -503,19 +576,17 @@ function Testimonials() {
   return (
     <Section
       id="temoignages"
+      n="08"
       eyebrow="Témoignages"
       title="Des entrepreneurs comme vous."
     >
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="space-y-12">
         {TESTIMONIALS.map(([quote, initials, name, role]) => (
-          <figure
-            key={name}
-            className="flex flex-col rounded-card border border-border-soft bg-surface p-5"
-          >
-            <blockquote className="flex-1 text-sm text-ink">
+          <figure key={name} className="border-t-2 border-brand-brass pt-6">
+            <blockquote className="max-w-[56ch] font-display text-lg font-normal leading-[1.45] text-ink">
               « {quote} »
             </blockquote>
-            <figcaption className="mt-5 flex items-center gap-3">
+            <figcaption className="mt-5 flex flex-wrap items-center gap-3">
               <span
                 aria-hidden
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-nav-active font-mono text-xs text-ink"
@@ -526,8 +597,10 @@ function Testimonials() {
                 <span className="block font-medium text-ink">{name}</span>
                 <span className="block text-ink-muted">{role}</span>
               </span>
+              <span className="ml-auto font-mono text-xs text-ink-muted">
+                Avis vérifié
+              </span>
             </figcaption>
-            <p className="mt-3 font-mono text-xs text-ink-muted">Avis vérifié</p>
           </figure>
         ))}
       </div>
@@ -535,7 +608,7 @@ function Testimonials() {
   );
 }
 
-/* ---------------------------- 11. FAQ ------------------------- */
+/* ---------------------------- 09 FAQ ------------------------- */
 
 const FAQ = [
   [
@@ -564,10 +637,11 @@ function Faq() {
   return (
     <Section
       id="faq"
+      n="09"
       eyebrow="Questions fréquentes"
       title="Ce que les entrepreneurs nous demandent."
     >
-      <div className="max-w-3xl border-t border-border-soft">
+      <div className="border-t border-border-soft">
         {FAQ.map(([q, a]) => (
           <Disclosure key={q} summary={q}>
             {a}
@@ -578,25 +652,25 @@ function Faq() {
   );
 }
 
-/* ------------------------- 12. CTA final --------------------- */
+/* ------------------------- CTA final --------------------- */
 
 function FinalCta() {
   return (
     <section className="bg-brand-slate">
-      <div className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-surface/70">
+      <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+        <p className="font-mono text-xs uppercase tracking-[0.22em] text-surface/70">
           Parlons de votre projet
         </p>
-        <h2 className="mt-3 max-w-2xl font-display text-xl text-surface sm:text-[26px]">
+        <h2 className="mt-5 max-w-[16ch] text-balance font-display text-[34px] leading-[1.08] text-surface sm:text-[46px]">
           Une question avant de vous lancer ?
         </h2>
-        <p className="mt-3 max-w-xl text-sm text-surface/80">
+        <p className="mt-5 max-w-[54ch] text-base text-surface/80">
           Un juriste vous rappelle et vérifie la faisabilité de votre projet,{" "}
           <span className="text-brand-brass">sans engagement</span>.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/login"
+            href="/creer"
             className="inline-flex h-11 items-center justify-center rounded-control bg-surface px-5 text-base font-medium text-brand-slate transition-colors hover:bg-page"
           >
             Créer mon entreprise
@@ -613,7 +687,7 @@ function FinalCta() {
   );
 }
 
-/* ---------------------------- Page ------------------------- */
+/* ------------------------------ Page ----------------------- */
 
 export default function MarketingHomePage() {
   return (
@@ -623,6 +697,13 @@ export default function MarketingHomePage() {
       <Services />
       <WhyUs />
       <HowItWorks />
+      <StatBand
+        items={[
+          ["10 j", "Délai moyen ouvré"],
+          ["1 000+", "Dossiers accompagnés"],
+          ["0", "Déplacement requis"],
+        ]}
+      />
       <Domiciliation />
       <Mre />
       <Support />

@@ -24,7 +24,7 @@
   --font-sans: var(--font-plex-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-plex-mono), "SF Mono", ui-monospace, monospace;
 
-  /* Échelle typographique 13 / 14 / 16 / 20 / 28 / 40 */
+  /* Échelle typographique back-office 13 / 14 / 16 / 20 / 28 / 40 (design-system.md §3) */
   --text-xs: 13px;
   --text-xs--line-height: 1.6;
   --text-sm: 14px;
@@ -37,6 +37,14 @@
   --text-xl--line-height: 1.15;
   --text-2xl: 40px;
   --text-2xl--line-height: 1.15;
+
+  /* Échelle éditoriale vitrine — extension autorisée par V2_PROMPT PARTIE B
+     (« exploiter Fraunces à fond, display 44–56px sur les ouvertures »).
+     Réservée aux pages marketing ; le back-office garde l'échelle ci-dessus. */
+  --text-headline: 34px;
+  --text-headline--line-height: 1.1;
+  --text-display: 44px;
+  --text-display--line-height: 1.05;
 
   /* Formes (design-system.md §4) — rien au-dessus de 10px */
   --radius-control: 6px;
@@ -67,6 +75,7 @@
     font-weight: 600; /* jamais 800/900 (§3) */
     line-height: 1.15;
     color: var(--color-ink);
+    font-optical-sizing: auto; /* Fraunces : axe opsz suit la taille */
   }
 
   /* Cible de focus visible — plancher qualité */
@@ -78,5 +87,34 @@
 
   ::selection {
     background-color: color-mix(in srgb, var(--color-brand-slate) 18%, transparent);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Apparition au scroll (vitrine) — fondu + léger translateY.
+ * Respecte prefers-reduced-motion. JS ajoute .reveal-in via observer.
+ * ------------------------------------------------------------------ */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-in {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }

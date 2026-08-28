@@ -15,25 +15,24 @@ const COLUMNS = [
     links: [
       ["Guides", "/guides"],
       ["Questions fréquentes", "/#faq"],
-      ["Modèles de statuts", "/guides"],
-      ["Glossaire juridique", "/guides"],
+      ["Tarifs", "/tarifs"],
     ],
   },
   {
     title: "Entreprise",
     links: [
-      ["À propos", "/contact"],
       ["Contact", "/contact"],
+      ["Créer mon entreprise", "/creer"],
       ["Espace client", "/login"],
     ],
   },
   {
     title: "Légal",
     links: [
-      ["Mentions légales", "/guides"],
-      ["Conditions d’utilisation", "/guides"],
-      ["Confidentialité", "/guides"],
-      ["Cookies", "/guides"],
+      ["Mentions légales", "/mentions-legales"],
+      ["Conditions d’utilisation", "/mentions-legales#cgu"],
+      ["Confidentialité", "/mentions-legales#confidentialite"],
+      ["Cookies", "/mentions-legales#cookies"],
     ],
   },
 ] as const;

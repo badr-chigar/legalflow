@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 
+import { ToastProvider } from "@/components/ui/toast";
+
 // Titres — Fraunces (serif à caractère). design-system.md §3.
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -37,7 +39,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="fr"
       className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
     >
-      <body className="min-h-full bg-page text-ink">{children}</body>
+      <body className="min-h-full bg-page text-ink">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

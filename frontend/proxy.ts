@@ -27,12 +27,12 @@ const ACCESS_COOKIE_OPTS = {
 const PUBLIC_PATHS = [
   "/",
   "/login",
-  "/creer",
   "/tarifs",
   "/creation-entreprise",
   "/domiciliation",
   "/contact",
   "/guides",
+  "/mentions-legales",
 ];
 
 function isPublic(pathname: string): boolean {

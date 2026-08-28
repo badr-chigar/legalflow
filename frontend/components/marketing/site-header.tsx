@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -16,9 +17,12 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border-soft bg-surface">
+    <header className="sticky top-0 z-40 border-b border-border-soft bg-page/95 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-6">
         <Link
           href="/"
@@ -28,12 +32,18 @@ export function SiteHeader() {
           LegalFlow
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-ink-muted transition-colors hover:text-ink"
+              aria-current={isActive(item.href) ? "page" : undefined}
+              className={cn(
+                "text-sm transition-colors",
+                isActive(item.href)
+                  ? "text-ink"
+                  : "text-ink-muted hover:text-ink",
+              )}
             >
               {item.label}
             </Link>
@@ -47,7 +57,7 @@ export function SiteHeader() {
           >
             Se connecter
           </Link>
-          <Link href="/login" className={buttonVariants({ size: "sm" })}>
+          <Link href="/creer" className={buttonVariants({ size: "sm" })}>
             Créer mon entreprise
           </Link>
         </div>
@@ -92,7 +102,7 @@ export function SiteHeader() {
               Se connecter
             </Link>
             <Link
-              href="/login"
+              href="/creer"
               onClick={() => setOpen(false)}
               className={cn(buttonVariants(), "w-full")}
             >

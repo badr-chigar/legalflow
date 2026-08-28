@@ -1,16 +1,17 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { LogoutButton } from "@/components/app-shell/logout-button";
 import { Sidebar } from "@/components/app-shell/sidebar";
 import { getCurrentUser } from "@/lib/api";
-import type { UserRole } from "@/lib/types";
+import { ROLE_LABEL } from "@/lib/format";
 
-const ROLE_LABEL: Record<UserRole, string> = {
-  client: "Client",
-  juriste: "Juriste",
-  admin: "Administrateur",
-};
+const MOBILE_NAV = [
+  { href: "/dashboard", label: "Tableau de bord" },
+  { href: "/companies", label: "Sociétés" },
+  { href: "/documents", label: "Documents" },
+];
 
 export default async function AppLayout({
   children,
@@ -41,6 +42,18 @@ export default async function AppLayout({
           </div>
           <LogoutButton />
         </header>
+
+        <nav className="flex gap-1 overflow-x-auto border-b border-border-soft bg-surface px-4 py-2 md:hidden">
+          {MOBILE_NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="whitespace-nowrap rounded-control px-3 py-1.5 text-sm text-ink-muted hover:bg-nav-active hover:text-ink"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         <main className="flex-1 px-6 py-8">{children}</main>
       </div>

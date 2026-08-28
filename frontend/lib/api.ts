@@ -1,11 +1,13 @@
 import "server-only";
 
+import { cache } from "react";
+
 import {
   getAccessToken,
   getRefreshToken,
   setAccessToken,
 } from "@/lib/auth";
-import type { AuthTokens, User } from "@/lib/types";
+import type { AuthTokens, Paginated, User } from "@/lib/types";
 
 /**
  * Client API centralisé — LE seul endroit qui parle à l'API Django REST.
@@ -141,8 +143,28 @@ export const apiPatch = <T>(path: string, body: Json) =>
 export const apiDelete = (path: string) =>
   apiRequest<null>(path, { method: "DELETE" });
 
-/** Profil de l'utilisateur connecté (GET /api/auth/me/). */
-export const getCurrentUser = () => apiGet<User>("/api/auth/me/");
+/**
+ * Récupère toutes les pages d'une liste paginée DRF en suivant `next`.
+ * (L'API n'expose pas de `page_size` réglable — sinon une seule requête.)
+ */
+export async function apiGetAll<T>(path: string): Promise<T[]> {
+  const out: T[] = [];
+  let next: string | null = path;
+  while (next) {
+    const page: Paginated<T> = await apiRequest<Paginated<T>>(next);
+    out.push(...page.results);
+    next = page.next
+      ? new URL(page.next).pathname + new URL(page.next).search
+      : null;
+  }
+  return out;
+}
+
+/**
+ * Profil de l'utilisateur connecté (GET /api/auth/me/).
+ * `cache()` : dédupliqué le temps d'un rendu (layout + page).
+ */
+export const getCurrentUser = cache(() => apiGet<User>("/api/auth/me/"));
 
 /**
  * Authentifie un couple e-mail / mot de passe auprès de Django.

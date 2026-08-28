@@ -90,3 +90,13 @@ export interface SignatureRequestCreated extends SignatureRequest {
   /** Exposé uniquement en dev (DEBUG) — à retirer en production. */
   otp_code_debug: string;
 }
+
+// --- Server actions ------------------------------------------------------
+export type ActionResult<T = null> =
+  | { ok: true; data: T }
+  | { ok: false; error: string };
+
+/** Résultat de la vérification OTP — le statut HTTP porte le motif. */
+export type VerifyResult =
+  | { ok: true; signedAt: string | null }
+  | { ok: false; status: number; reason: string };
