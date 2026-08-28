@@ -21,8 +21,16 @@ env = environ.Env(
 )
 environ.Env.read_env(BASE_DIR / ".env")
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="dev-insecure-change-me")
 DEBUG = env("DJANGO_DEBUG")
+
+_INSECURE_KEY = "dev-insecure-change-me"
+SECRET_KEY = env("DJANGO_SECRET_KEY", default=_INSECURE_KEY)
+if not DEBUG and SECRET_KEY == _INSECURE_KEY:
+    raise RuntimeError(
+        "DJANGO_SECRET_KEY doit etre defini (et different de la valeur de dev) "
+        "quand DEBUG=False."
+    )
+
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
 # Render injecte le hostname public du service — l'ajouter automatiquement.
@@ -144,11 +152,24 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
+    # Limitation de debit : protege le login et l'OTP du brute-force.
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/min",
+        "user": "1000/min",
+        "login": "10/min",
+        "otp": "20/min",
+    },
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
 }
 
 SPECTACULAR_SETTINGS = {
@@ -171,6 +192,10 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-# OTP tuning (signature electronique)
+# OTP (signature electronique)
 OTP_TTL_MINUTES = env.int("OTP_TTL_MINUTES", default=10)
 OTP_MAX_ATTEMPTS = env.int("OTP_MAX_ATTEMPTS", default=5)
+# En production reelle, le code OTP est envoye par SMS / e-mail et n'apparait
+# JAMAIS dans la reponse de l'API. Faute de passerelle SMS pour la demo, on peut
+# l'exposer explicitement via cette variable (par defaut : uniquement en debug).
+OTP_EXPOSE_CODE = env.bool("OTP_EXPOSE_CODE", default=DEBUG)

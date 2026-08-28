@@ -12,7 +12,13 @@ pytestmark = pytest.mark.django_db
 def _request_otp(api, document_id):
     res = api.post(f"/api/documents/{document_id}/request-signature/")
     assert res.status_code == status.HTTP_201_CREATED
-    return res.data["otp_code_debug"]
+    # Le code n'est pas expose dans la reponse (sauf OTP_EXPOSE_CODE) : on le lit
+    # en base, comme le ferait un test d'integration realiste.
+    return (
+        SignatureRequest.objects.filter(document_id=document_id)
+        .latest("created_at")
+        .otp_code
+    )
 
 
 def test_request_signature_creates_pending_otp(auth, client_user, document):
@@ -22,6 +28,29 @@ def test_request_signature_creates_pending_otp(auth, client_user, document):
     sig = SignatureRequest.objects.get(document=document)
     assert sig.status == SignatureRequest.Status.PENDING
     assert sig.expires_at > timezone.now()
+
+
+def test_otp_not_leaked_in_response_by_default(auth, client_user, document, settings):
+    settings.OTP_EXPOSE_CODE = False
+    api = auth(client_user)
+    res = api.post(f"/api/documents/{document.id}/request-signature/")
+    assert res.status_code == status.HTTP_201_CREATED
+    assert "otp_code_debug" not in res.data
+    assert "otp_code" not in res.data  # jamais serialise non plus
+
+
+def test_otp_exposed_only_when_flag_enabled(auth, client_user, document, settings):
+    settings.OTP_EXPOSE_CODE = True
+    api = auth(client_user)
+    res = api.post(f"/api/documents/{document.id}/request-signature/")
+    assert res.data["otp_code_debug"].isdigit()
+
+
+def test_two_otp_requests_yield_different_codes(auth, client_user, document):
+    api = auth(client_user)
+    first = _request_otp(api, document.id)
+    second = _request_otp(api, document.id)
+    assert first != second  # code aleatoire, pas statique
 
 
 def test_verify_with_correct_code_signs_document(auth, client_user, document):

@@ -1,8 +1,10 @@
+from django.conf import settings
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 
 from companies.permissions import IsOwnerLawyerOrAdmin
 
@@ -44,7 +46,12 @@ class LegalDocumentViewSet(viewsets.ModelViewSet):
         responses={201: SignatureRequestSerializer},
         description="Genere un code OTP a usage unique pour signer le document.",
     )
-    @action(detail=True, methods=["post"], url_path="request-signature")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="request-signature",
+        throttle_classes=[ScopedRateThrottle],
+    )
     def request_signature(self, request, pk=None):
         document = self.get_object()
         if document.status == LegalDocument.Status.SIGNED:
@@ -53,10 +60,14 @@ class LegalDocumentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
         sig = SignatureRequest.objects.create(document=document)
-        # En prod : envoi de sig.otp_code par SMS / e-mail. Ici on l'expose en dev.
         payload = SignatureRequestSerializer(sig).data
-        payload["otp_code_debug"] = sig.otp_code
+        # En prod reelle, sig.otp_code part par SMS / e-mail et n'est jamais
+        # renvoye ici. Exposition uniquement si OTP_EXPOSE_CODE est active.
+        if settings.OTP_EXPOSE_CODE:
+            payload["otp_code_debug"] = sig.otp_code
         return Response(payload, status=status.HTTP_201_CREATED)
+
+    request_signature.throttle_scope = "otp"
 
     @extend_schema(
         request=VerifySignatureSerializer,
@@ -66,7 +77,12 @@ class LegalDocumentViewSet(viewsets.ModelViewSet):
         },
         description="Verifie le code OTP et passe le document au statut 'signe'.",
     )
-    @action(detail=True, methods=["post"], url_path="verify-signature")
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="verify-signature",
+        throttle_classes=[ScopedRateThrottle],
+    )
     def verify_signature(self, request, pk=None):
         document = self.get_object()
         serializer = VerifySignatureSerializer(data=request.data)
@@ -92,3 +108,5 @@ class LegalDocumentViewSet(viewsets.ModelViewSet):
             {"detail": reason},
             status=_REASON_STATUS.get(reason, status.HTTP_400_BAD_REQUEST),
         )
+
+    verify_signature.throttle_scope = "otp"

@@ -1,11 +1,20 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from rest_framework.test import APIClient
 
 from companies.models import Company
 from documents.models import LegalDocument
 
 User = get_user_model()
+
+
+@pytest.fixture(autouse=True)
+def _reset_throttle_cache():
+    """Le throttling DRF s'appuie sur le cache : on repart de zero a chaque test."""
+    cache.clear()
+    yield
+    cache.clear()
 
 
 @pytest.fixture

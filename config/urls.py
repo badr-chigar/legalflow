@@ -3,13 +3,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from accounts.views import LoginView, RefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # auth (JWT)
-    path("api/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # auth (JWT) - vues limitees en debit contre le brute-force
+    path("api/auth/login/", LoginView.as_view(), name="token_obtain_pair"),
+    path("api/auth/refresh/", RefreshView.as_view(), name="token_refresh"),
     # resources
     path("api/", include("accounts.urls")),
     path("api/", include("companies.urls")),
