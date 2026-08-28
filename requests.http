@@ -1,0 +1,83 @@
+### LegalFlow — jeu de requêtes pour tester l'API (GET / POST / PUT / PATCH / DELETE)
+### Utilise l'extension "REST Client" de VS Code, ou adapte en curl.
+
+@base = http://127.0.0.1:8000
+@email = client@example.com
+@password = pass12345
+
+### 1. Créer un compte client
+POST {{base}}/api/auth/register/
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}", "first_name": "Badr", "role": "client" }
+
+### 2. Login → récupérer le token JWT
+# @name login
+POST {{base}}/api/auth/login/
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+@access = {{login.response.body.access}}
+
+### 3. Profil courant
+GET {{base}}/api/auth/me/
+Authorization: Bearer {{access}}
+
+### 4. POST — créer une société
+# @name createCompany
+POST {{base}}/api/companies/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{ "name": "Acme SAS", "legal_form": "SAS", "share_capital": "1000.00" }
+
+@companyId = {{createCompany.response.body.id}}
+
+### 5. GET — liste des sociétés
+GET {{base}}/api/companies/
+Authorization: Bearer {{access}}
+
+### 6. GET — détail
+GET {{base}}/api/companies/{{companyId}}/
+Authorization: Bearer {{access}}
+
+### 7. PUT — remplacer
+PUT {{base}}/api/companies/{{companyId}}/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{ "name": "Acme SASU", "legal_form": "SASU", "share_capital": "500.00" }
+
+### 8. PATCH — modifier un champ
+PATCH {{base}}/api/companies/{{companyId}}/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{ "status": "en_revue" }
+
+### 9. POST — créer un document rattaché
+# @name createDoc
+POST {{base}}/api/documents/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{ "company": {{companyId}}, "doc_type": "statuts" }
+
+@docId = {{createDoc.response.body.id}}
+
+### 10. POST — demander la signature (génère un OTP, renvoyé en dev via otp_code_debug)
+# @name reqSig
+POST {{base}}/api/documents/{{docId}}/request-signature/
+Authorization: Bearer {{access}}
+
+### 11. POST — vérifier l'OTP → document signé
+POST {{base}}/api/documents/{{docId}}/verify-signature/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{ "code": "{{reqSig.response.body.otp_code_debug}}" }
+
+### 12. DELETE — supprimer la société
+DELETE {{base}}/api/companies/{{companyId}}/
+Authorization: Bearer {{access}}
