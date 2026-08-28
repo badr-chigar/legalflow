@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
  * lien (tertiaire). Pas de « ghost » dégradé, pas d'ombre, rayon 6px.
  */
 type Variant = "primary" | "secondary" | "link";
-type Size = "md" | "sm";
+type Size = "md" | "sm" | "lg";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-control " +
@@ -25,7 +25,15 @@ const variants: Record<Variant, string> = {
 const sizes: Record<Size, string> = {
   md: "h-9 px-4 text-sm",
   sm: "h-8 px-3 text-xs",
+  lg: "h-11 px-5 text-base",
 };
+
+export function buttonVariants({
+  variant = "primary",
+  size = "md",
+}: { variant?: Variant; size?: Size } = {}) {
+  return cn(base, variants[variant], variant !== "link" && sizes[size]);
+}
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -38,7 +46,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       type={type}
-      className={cn(base, variants[variant], variant !== "link" && sizes[size], className)}
+      className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     />
   ),
