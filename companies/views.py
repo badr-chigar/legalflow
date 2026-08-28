@@ -10,6 +10,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
     serializer_class = CompanySerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerLawyerOrAdmin]
+    lookup_value_regex = r"\d+"
 
     def get_queryset(self):
         user = self.request.user

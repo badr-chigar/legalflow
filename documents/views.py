@@ -30,6 +30,7 @@ class LegalDocumentViewSet(viewsets.ModelViewSet):
     serializer_class = LegalDocumentSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerLawyerOrAdmin]
     parser_classes = [JSONParser, MultiPartParser, FormParser]
+    lookup_value_regex = r"\d+"
 
     def get_queryset(self):
         user = self.request.user
